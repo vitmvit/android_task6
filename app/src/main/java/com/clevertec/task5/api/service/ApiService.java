@@ -1,8 +1,6 @@
 package com.clevertec.task5.api.service;
 
-import android.os.Build;
 import android.widget.Toast;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -17,6 +15,10 @@ import com.clevertec.task5.model.dto.InfoboxDto;
 import com.clevertec.task5.model.dto.parent.ApiData;
 import com.clevertec.task5.model.pojo.Marker;
 import com.clevertec.task5.util.MarkerUtils;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -43,15 +45,30 @@ public class ApiService extends ViewModel {
         infoboxApi = new ApiProvider().getRetrofit(BASE_URL).create(InfoboxApi.class);
     }
 
-    public LiveData<List<Marker>> getMarkers() {
+    public LiveData<List<Marker>> getMarkers(GoogleMap googleMap, double lat, double lon) {
+
         if (listMutableLiveData == null) {
             listMutableLiveData = new MutableLiveData<List<Marker>>();
             loadMarkers();
+            getCameraStartPosition(googleMap, lat, lon);
         }
         return listMutableLiveData;
     }
 
+    private void getCameraStartPosition(GoogleMap googleMap, double lat, double lon) {
+        GoogleMap mMap = googleMap;
+        LatLng selectPoint = new LatLng(lat, lon);
+
+        CameraPosition cameraPosition = CameraPosition.builder()
+                .target(selectPoint)
+                .zoom(14f)
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), null);
+    }
+
     private void loadMarkers() {
+
         Observable<List<AtmDto>> call1 = atmApi.getAtm(DEFAULT_CITY);
         Observable<List<FilialDto>> call2 = filialApi.getFilial(DEFAULT_CITY);
         Observable<List<InfoboxDto>> call3 = infoboxApi.getInfobox(DEFAULT_CITY);
@@ -87,7 +104,6 @@ public class ApiService extends ViewModel {
                         Toast.makeText(new MapsActivity(), DATA_LOADING_ERROR, Toast.LENGTH_LONG).show();
                     }
 
-                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onComplete() {
                         listMutableLiveData.setValue(markers);
