@@ -23,9 +23,14 @@ import java.util.List;
 import static com.clevertec.task5.constants.Constants.*;
 import static com.clevertec.task5.util.MarkerUtils.getSortedList;
 
+/*
+ * В качестве слоя ViewModel выступает класс ApiService
+ * */
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ApiService model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        ApiService model = new ViewModelProvider(this).get(ApiService.class);
+        model = new ViewModelProvider(this).get(ApiService.class);
         LiveData<List<Marker>> markerList = model.getMarkers(googleMap, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
         markerList.observe(this, new Observer<List<Marker>>() {
 

@@ -1,4 +1,4 @@
-package com.clevertec.task5.api;
+package com.clevertec.task5.api.api;
 
 import com.clevertec.task5.model.dto.AtmDto;
 import io.reactivex.Observable;
