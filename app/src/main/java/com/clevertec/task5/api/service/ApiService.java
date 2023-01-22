@@ -51,8 +51,8 @@ public class ApiService extends ViewModel {
 
         if (listMutableLiveData == null) {
             listMutableLiveData = new MutableLiveData<List<Marker>>();
-            loadMarkers();
             getCameraStartPosition(googleMap, lat, lon);
+            loadMarkers();
         }
         return listMutableLiveData;
     }
