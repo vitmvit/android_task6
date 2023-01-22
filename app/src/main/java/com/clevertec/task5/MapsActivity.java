@@ -30,7 +30,6 @@ import static com.clevertec.task5.util.MarkerUtils.getSortedList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private ApiService model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        model = new ViewModelProvider(this).get(ApiService.class);
+        ApiService model = new ViewModelProvider(this).get(ApiService.class);
         LiveData<List<Marker>> markerList = model.getMarkers(googleMap, DEFAULT_LATITUDE_COORD, DEFAULT_LONGITUDE_COORD);
         markerList.observe(this, new Observer<List<Marker>>() {
 
