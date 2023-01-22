@@ -8,8 +8,8 @@ import com.clevertec.task5.MapsActivity;
 import com.clevertec.task5.api.api.AtmApi;
 import com.clevertec.task5.api.api.FilialApi;
 import com.clevertec.task5.api.api.InfoboxApi;
-import com.clevertec.task5.component.ApiComponent;
-import com.clevertec.task5.component.DaggerApiComponent;
+import com.clevertec.task5.api.provider.ApiProvider;
+import com.clevertec.task5.dagger.component.DaggerApiComponent;
 import com.clevertec.task5.model.dto.AtmDto;
 import com.clevertec.task5.model.dto.FilialDto;
 import com.clevertec.task5.model.dto.InfoboxDto;
@@ -40,11 +40,11 @@ public class ApiService extends ViewModel {
     private MutableLiveData<List<Marker>> listMutableLiveData;
 
     public ApiService() {
-
-        ApiComponent apiComponent = DaggerApiComponent.create();
-        atmApi = apiComponent.getApiProvider().getRetrofit().create(AtmApi.class);
-        filialApi = apiComponent.getApiProvider().getRetrofit().create(FilialApi.class);
-        infoboxApi = apiComponent.getApiProvider().getRetrofit().create(InfoboxApi.class);
+        ApiProvider apiProvider = new ApiProvider(BASE_URL);
+        DaggerApiComponent.create().inject(apiProvider);
+        atmApi = apiProvider.getRetrofit().create(AtmApi.class);
+        filialApi = apiProvider.getRetrofit().create(FilialApi.class);
+        infoboxApi = apiProvider.getRetrofit().create(InfoboxApi.class);
     }
 
     public LiveData<List<Marker>> getMarkers(GoogleMap googleMap, double lat, double lon) {
